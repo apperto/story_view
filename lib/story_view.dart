@@ -384,12 +384,17 @@ class StoryView extends StatefulWidget {
 
   final StoryController controller;
 
+  final Color indicatorForegroundColor;
+  final Color indicatorBackgroundColor;
+
   StoryView(
     this.storyItems, {
     this.controller,
     this.onComplete,
     this.onStoryShow,
     this.progressPosition = ProgressPosition.top,
+    this.indicatorForegroundColor,
+    this.indicatorBackgroundColor,
     this.repeat = false,
     this.inline = false,
   })  : assert(storyItems != null && storyItems.length > 0, "[storyItems] should not be null or empty"),
@@ -607,6 +612,8 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
                   this.currentAnimation,
                   key: UniqueKey(),
                   indicatorHeight: widget.inline ? IndicatorHeight.small : IndicatorHeight.large,
+                  foregroundColor: widget.indicatorForegroundColor,
+                  backgroundColor: widget.indicatorBackgroundColor,
                 ),
               ),
             ),
@@ -674,11 +681,15 @@ class PageBar extends StatefulWidget {
   final List<PageData> pages;
   final Animation<double> animation;
   final IndicatorHeight indicatorHeight;
+  final Color foregroundColor;
+  final Color backgroundColor;
 
   PageBar(
     this.pages,
     this.animation, {
     this.indicatorHeight = IndicatorHeight.large,
+    this.foregroundColor,
+    this.backgroundColor,
     Key key,
   }) : super(key: key);
 
@@ -724,6 +735,8 @@ class PageBarState extends State<PageBar> {
             child: StoryProgressIndicator(
               isPlaying(it) ? widget.animation.value : it.shown ? 1 : 0,
               indicatorHeight: widget.indicatorHeight == IndicatorHeight.large ? 5 : 3,
+              foregroundColor: widget.foregroundColor,
+              backgroundColor: widget.backgroundColor,
             ),
           ),
         );
@@ -738,10 +751,14 @@ class StoryProgressIndicator extends StatelessWidget {
   /// From `0.0` to `1.0`, determines the progress of the indicator
   final double value;
   final double indicatorHeight;
+  final Color foregroundColor;
+  final Color backgroundColor;
 
   StoryProgressIndicator(
     this.value, {
     this.indicatorHeight = 5,
+    this.foregroundColor,
+    this.backgroundColor,
   }) : assert(indicatorHeight != null && indicatorHeight > 0, "[indicatorHeight] should not be null or less than 1");
 
   @override
@@ -751,11 +768,11 @@ class StoryProgressIndicator extends StatelessWidget {
         this.indicatorHeight,
       ),
       foregroundPainter: IndicatorOval(
-        Colors.white.withOpacity(0.8),
+        this.foregroundColor ?? Colors.white.withOpacity(0.8),
         this.value,
       ),
       painter: IndicatorOval(
-        Colors.white.withOpacity(0.4),
+        this.backgroundColor ?? Colors.white.withOpacity(0.4),
         1.0,
       ),
     );
