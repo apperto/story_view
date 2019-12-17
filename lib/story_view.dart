@@ -71,31 +71,32 @@ class StoryItem {
     ] /** white text */);
 
     return StoryItem(
-        Container(
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(roundedTop ? 8 : 0),
-              bottom: Radius.circular(roundedBottom ? 8 : 0),
-            ),
+      Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(roundedTop ? 8 : 0),
+            bottom: Radius.circular(roundedBottom ? 8 : 0),
           ),
-          padding: EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ),
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(
-                color: contrast > 1.8 ? Colors.white : Colors.black,
-                fontSize: fontSize,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          //color: backgroundColor,
         ),
-        shown: shown);
+        padding: EdgeInsets.symmetric(
+          horizontal: 24,
+          vertical: 16,
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              color: contrast > 1.8 ? Colors.white : Colors.black,
+              fontSize: fontSize,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        //color: backgroundColor,
+      ),
+      shown: shown,
+    );
   }
 
   /// Shorthand for a full-page image content.
@@ -105,7 +106,7 @@ class StoryItem {
     ImageProvider image, {
     BoxFit imageFit = BoxFit.fitWidth,
     String caption,
-    Duration duration = Duration(seconds: 3),
+    Duration duration = const Duration(seconds: 3),
     bool shown = false,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
@@ -386,6 +387,7 @@ class StoryView extends StatefulWidget {
 
   final Color indicatorForegroundColor;
   final Color indicatorBackgroundColor;
+  final EdgeInsets progressMargin;
 
   StoryView(
     this.storyItems, {
@@ -395,6 +397,7 @@ class StoryView extends StatefulWidget {
     this.progressPosition = ProgressPosition.top,
     this.indicatorForegroundColor,
     this.indicatorBackgroundColor,
+    this.progressMargin,
     this.repeat = false,
     this.inline = false,
   })  : assert(storyItems != null && storyItems.length > 0, "[storyItems] should not be null or empty"),
@@ -614,6 +617,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
                   indicatorHeight: widget.inline ? IndicatorHeight.small : IndicatorHeight.large,
                   foregroundColor: widget.indicatorForegroundColor,
                   backgroundColor: widget.indicatorBackgroundColor,
+                  margin: widget.progressMargin,
                 ),
               ),
             ),
@@ -683,6 +687,7 @@ class PageBar extends StatefulWidget {
   final IndicatorHeight indicatorHeight;
   final Color foregroundColor;
   final Color backgroundColor;
+  final EdgeInsets margin;
 
   PageBar(
     this.pages,
@@ -690,6 +695,7 @@ class PageBar extends StatefulWidget {
     this.indicatorHeight = IndicatorHeight.large,
     this.foregroundColor,
     this.backgroundColor,
+    this.margin,
     Key key,
   }) : super(key: key);
 
@@ -737,6 +743,7 @@ class PageBarState extends State<PageBar> {
               indicatorHeight: widget.indicatorHeight == IndicatorHeight.large ? 5 : 3,
               foregroundColor: widget.foregroundColor,
               backgroundColor: widget.backgroundColor,
+              margin: widget.margin,
             ),
           ),
         );
@@ -753,27 +760,32 @@ class StoryProgressIndicator extends StatelessWidget {
   final double indicatorHeight;
   final Color foregroundColor;
   final Color backgroundColor;
+  final EdgeInsets margin;
 
   StoryProgressIndicator(
     this.value, {
     this.indicatorHeight = 5,
     this.foregroundColor,
     this.backgroundColor,
+    this.margin,
   }) : assert(indicatorHeight != null && indicatorHeight > 0, "[indicatorHeight] should not be null or less than 1");
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size.fromHeight(
-        this.indicatorHeight,
-      ),
-      foregroundPainter: IndicatorOval(
-        this.foregroundColor ?? Colors.white.withOpacity(0.8),
-        this.value,
-      ),
-      painter: IndicatorOval(
-        this.backgroundColor ?? Colors.white.withOpacity(0.4),
-        1.0,
+    return Container(
+      margin: this.margin ?? const EdgeInsets.all(0.0),
+      child: CustomPaint(
+        size: Size.fromHeight(
+          this.indicatorHeight,
+        ),
+        foregroundPainter: IndicatorOval(
+          this.foregroundColor ?? Colors.white.withOpacity(0.8),
+          this.value,
+        ),
+        painter: IndicatorOval(
+          this.backgroundColor ?? Colors.white.withOpacity(0.4),
+          1.0,
+        ),
       ),
     );
   }
