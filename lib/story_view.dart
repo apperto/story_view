@@ -647,6 +647,12 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
 
                         controlUnpause();
                       }
+                    }
+                    ..onTapCancel = () {
+                      debouncer.cancel();
+                      debouncer = null;
+
+                      controlUnpause();
                     };
                 })
               },
