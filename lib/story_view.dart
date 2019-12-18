@@ -35,12 +35,15 @@ class StoryItem {
   /// story item.
   bool shown;
 
+  int index;
+
   /// The page content
   final Widget view;
 
   StoryItem(
     this.view, {
     this.duration = const Duration(seconds: 3),
+    this.index,
     this.shown = false,
   }) : assert(duration != null, "[duration] should not be null");
 
@@ -59,6 +62,7 @@ class StoryItem {
     double fontSize = 18,
     bool roundedTop = false,
     bool roundedBottom = false,
+    int index,
   }) {
     double contrast = ContrastHelper.contrast([
       backgroundColor.red,
@@ -96,6 +100,7 @@ class StoryItem {
         //color: backgroundColor,
       ),
       shown: shown,
+      index: index,
     );
   }
 
@@ -108,6 +113,7 @@ class StoryItem {
     String caption,
     Duration duration = const Duration(seconds: 3),
     bool shown = false,
+    int index,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
@@ -154,6 +160,7 @@ class StoryItem {
       ),
       duration: duration,
       shown: shown,
+      index: index,
     );
   }
 
@@ -164,6 +171,7 @@ class StoryItem {
     bool shown = false,
     bool roundedTop = true,
     bool roundedBottom = false,
+    int index,
   }) {
     return StoryItem(
       Container(
@@ -195,6 +203,7 @@ class StoryItem {
         ),
       ),
       shown: shown,
+      index: index,
     );
   }
 
@@ -205,49 +214,52 @@ class StoryItem {
     String caption,
     bool shown = false,
     Map<String, dynamic> requestHeaders,
+    int index,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
-        Container(
-          color: Colors.black,
-          child: Stack(
-            children: <Widget>[
-              StoryImage.url(
-                url,
-                controller: controller,
-                fit: imageFit,
-                requestHeaders: requestHeaders,
-              ),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.only(
-                      bottom: 24,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 8,
-                    ),
-                    color: caption != null ? Colors.black54 : Colors.transparent,
-                    child: caption != null
-                        ? Text(
-                            caption,
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          )
-                        : SizedBox(),
+      Container(
+        color: Colors.black,
+        child: Stack(
+          children: <Widget>[
+            StoryImage.url(
+              url,
+              controller: controller,
+              fit: imageFit,
+              requestHeaders: requestHeaders,
+            ),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(
+                    bottom: 24,
                   ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  color: caption != null ? Colors.black54 : Colors.transparent,
+                  child: caption != null
+                      ? Text(
+                          caption,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                      : SizedBox(),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
-        shown: shown);
+      ),
+      shown: shown,
+      index: index,
+    );
   }
 
   /// Shorthand for creating inline image page.
@@ -260,6 +272,7 @@ class StoryItem {
     bool shown = false,
     bool roundedTop = true,
     bool roundedBottom = false,
+    int index,
   }) {
     return StoryItem(
       Container(
@@ -301,6 +314,7 @@ class StoryItem {
         ),
       ),
       shown: shown,
+      index: index,
     );
   }
 
@@ -312,49 +326,52 @@ class StoryItem {
     String caption,
     bool shown = false,
     Map<String, dynamic> requestHeaders,
+    int index,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
-        Container(
-          color: Colors.black,
-          child: Stack(
-            children: <Widget>[
-              StoryVideo.url(
-                url,
-                controller: controller,
-                requestHeaders: requestHeaders,
-              ),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.only(
-                      bottom: 24,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 8,
-                    ),
-                    color: caption != null ? Colors.black54 : Colors.transparent,
-                    child: caption != null
-                        ? Text(
-                            caption,
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          )
-                        : SizedBox(),
+      Container(
+        color: Colors.black,
+        child: Stack(
+          children: <Widget>[
+            StoryVideo.url(
+              url,
+              controller: controller,
+              requestHeaders: requestHeaders,
+            ),
+            SafeArea(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(
+                    bottom: 24,
                   ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  color: caption != null ? Colors.black54 : Colors.transparent,
+                  child: caption != null
+                      ? Text(
+                          caption,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                      : SizedBox(),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
-        shown: shown,
-        duration: duration ?? Duration(seconds: 10));
+      ),
+      shown: shown,
+      duration: duration ?? Duration(seconds: 10),
+      index: index,
+    );
   }
 }
 
