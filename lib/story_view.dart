@@ -21,6 +21,8 @@ enum IndicatorHeight { small, large }
 
 /// This is a representation of a story item (or page).
 class StoryItem {
+  final GlobalKey globalKey;
+
   /// Specifies how long the page should be displayed. It should be a reasonable
   /// amount of time greater than 0 milliseconds.
   final Duration duration;
@@ -42,6 +44,7 @@ class StoryItem {
 
   StoryItem(
     this.view, {
+    this.globalKey,
     this.duration = const Duration(seconds: 3),
     this.index,
     this.shown = false,
@@ -63,6 +66,7 @@ class StoryItem {
     bool roundedTop = false,
     bool roundedBottom = false,
     int index,
+    GlobalKey globalKey,
   }) {
     double contrast = ContrastHelper.contrast([
       backgroundColor.red,
@@ -101,6 +105,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
+      globalKey: globalKey,
     );
   }
 
@@ -114,6 +119,7 @@ class StoryItem {
     Duration duration = const Duration(seconds: 3),
     bool shown = false,
     int index,
+    GlobalKey globalKey,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
@@ -161,6 +167,7 @@ class StoryItem {
       duration: duration,
       shown: shown,
       index: index,
+      globalKey: globalKey,
     );
   }
 
@@ -172,6 +179,7 @@ class StoryItem {
     bool roundedTop = true,
     bool roundedBottom = false,
     int index,
+    GlobalKey globalKey,
   }) {
     return StoryItem(
       Container(
@@ -204,6 +212,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
+      globalKey: globalKey,
     );
   }
 
@@ -215,6 +224,7 @@ class StoryItem {
     bool shown = false,
     Map<String, dynamic> requestHeaders,
     int index,
+    GlobalKey globalKey,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
@@ -259,6 +269,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
+      globalKey: globalKey,
     );
   }
 
@@ -273,6 +284,7 @@ class StoryItem {
     bool roundedTop = true,
     bool roundedBottom = false,
     int index,
+    GlobalKey globalKey,
   }) {
     return StoryItem(
       Container(
@@ -315,6 +327,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
+      globalKey: globalKey,
     );
   }
 
@@ -327,6 +340,7 @@ class StoryItem {
     bool shown = false,
     Map<String, dynamic> requestHeaders,
     int index,
+    GlobalKey globalKey,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
@@ -371,6 +385,7 @@ class StoryItem {
       shown: shown,
       duration: duration ?? Duration(seconds: 10),
       index: index,
+      globalKey: globalKey,
     );
   }
 }
