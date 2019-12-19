@@ -66,7 +66,7 @@ class StoryItem {
     bool roundedTop = false,
     bool roundedBottom = false,
     int index,
-    GlobalKey globalKey,
+    // GlobalKey globalKey,
   }) {
     double contrast = ContrastHelper.contrast([
       backgroundColor.red,
@@ -105,7 +105,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
-      globalKey: globalKey,
+      // globalKey: globalKey,
     );
   }
 
@@ -123,51 +123,54 @@ class StoryItem {
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
-      Container(
-        color: Colors.black,
-        child: Stack(
-          children: <Widget>[
-            Center(
-              child: Image(
-                image: image,
-                height: double.infinity,
-                width: double.infinity,
-                fit: imageFit,
-              ),
-            ),
-            SafeArea(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
+      RepaintBoundary(
+        key: globalKey,
+        child: Container(
+          color: Colors.black,
+          child: Stack(
+            children: <Widget>[
+              Center(
+                child: Image(
+                  image: image,
+                  height: double.infinity,
                   width: double.infinity,
-                  margin: EdgeInsets.only(
-                    bottom: 24,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
-                  ),
-                  color: caption != null ? Colors.black54 : Colors.transparent,
-                  child: caption != null
-                      ? Text(
-                          caption,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        )
-                      : SizedBox(),
+                  fit: imageFit,
                 ),
               ),
-            )
-          ],
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.only(
+                      bottom: 24,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 8,
+                    ),
+                    color: caption != null ? Colors.black54 : Colors.transparent,
+                    child: caption != null
+                        ? Text(
+                            caption,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          )
+                        : SizedBox(),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
       duration: duration,
       shown: shown,
       index: index,
-      globalKey: globalKey,
+      // globalKey: globalKey,
     );
   }
 
@@ -179,7 +182,7 @@ class StoryItem {
     bool roundedTop = true,
     bool roundedBottom = false,
     int index,
-    GlobalKey globalKey,
+    // GlobalKey globalKey,
   }) {
     return StoryItem(
       Container(
@@ -212,7 +215,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
-      globalKey: globalKey,
+      // globalKey: globalKey,
     );
   }
 
@@ -224,7 +227,7 @@ class StoryItem {
     bool shown = false,
     Map<String, dynamic> requestHeaders,
     int index,
-    GlobalKey globalKey,
+    // GlobalKey globalKey,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
@@ -269,7 +272,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
-      globalKey: globalKey,
+      // globalKey: globalKey,
     );
   }
 
@@ -284,7 +287,7 @@ class StoryItem {
     bool roundedTop = true,
     bool roundedBottom = false,
     int index,
-    GlobalKey globalKey,
+    // GlobalKey globalKey,
   }) {
     return StoryItem(
       Container(
@@ -327,7 +330,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
-      globalKey: globalKey,
+      // globalKey: globalKey,
     );
   }
 
@@ -340,7 +343,7 @@ class StoryItem {
     bool shown = false,
     Map<String, dynamic> requestHeaders,
     int index,
-    GlobalKey globalKey,
+    // GlobalKey globalKey,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
@@ -385,7 +388,7 @@ class StoryItem {
       shown: shown,
       duration: duration ?? Duration(seconds: 10),
       index: index,
-      globalKey: globalKey,
+      // globalKey: globalKey,
     );
   }
 }
