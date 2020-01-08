@@ -114,49 +114,62 @@ class StoryItem {
     Duration duration = const Duration(seconds: 3),
     bool shown = false,
     int index,
+    Widget bottomWidget,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
-      Container(
-        color: Colors.black,
-        child: Stack(
-          children: <Widget>[
-            Center(
-              child: Image(
-                image: image,
-                height: double.infinity,
-                width: double.infinity,
-                fit: imageFit,
-              ),
-            ),
-            SafeArea(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(
-                    bottom: 24,
+      Stack(
+        children: <Widget>[
+          Container(
+            color: Colors.black,
+            child: Stack(
+              children: <Widget>[
+                Center(
+                  child: Image(
+                    image: image,
+                    height: double.infinity,
+                    width: double.infinity,
+                    fit: imageFit,
                   ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
-                  ),
-                  color: caption != null ? Colors.black54 : Colors.transparent,
-                  child: caption != null
-                      ? Text(
-                          caption,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        )
-                      : SizedBox(),
                 ),
-              ),
-            )
-          ],
-        ),
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(
+                        bottom: 24,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 8,
+                      ),
+                      color: caption != null ? Colors.black54 : Colors.transparent,
+                      child: caption != null
+                          ? Text(
+                              caption,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            )
+                          : SizedBox(),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: SafeArea(
+              child: bottomWidget ?? Container(width: 0.0, height: 0.0),
+            ),
+          ),
+        ],
       ),
       duration: duration,
       shown: shown,
@@ -641,7 +654,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
           ),
           Align(
             alignment: Alignment.centerRight,
-            heightFactor: 1,
+            heightFactor: 0.7,
             child: RawGestureDetector(
               gestures: <Type, GestureRecognizerFactory>{
                 TapGestureRecognizer: GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
@@ -677,7 +690,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
           ),
           Align(
             alignment: Alignment.centerLeft,
-            heightFactor: 1,
+            heightFactor: 0.7,
             child: SizedBox(
               child: GestureDetector(
                 onTap: () {
