@@ -353,7 +353,7 @@ class StoryItem {
               url,
               controller: controller,
               requestHeaders: requestHeaders,
-              onComplete: (state) => onVideoLoaded(state),
+              onVideoLoaded: (state) => onVideoLoaded(state),
             ),
             SafeArea(
               child: Align(
