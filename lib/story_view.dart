@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:story_view/utils.dart';
 import 'story_video.dart';
 import 'story_image.dart';
 import 'story_controller.dart';
@@ -340,6 +341,7 @@ class StoryItem {
     bool shown = false,
     Map<String, dynamic> requestHeaders,
     int index,
+    Function(LoadState) onVideoLoaded,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
@@ -351,6 +353,7 @@ class StoryItem {
               url,
               controller: controller,
               requestHeaders: requestHeaders,
+              onComplete: (state) => onVideoLoaded(state),
             ),
             SafeArea(
               child: Align(

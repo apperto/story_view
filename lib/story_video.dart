@@ -17,22 +17,25 @@ class VideoLoader {
 
   LoadState state = LoadState.loading;
 
-  VideoLoader(this.url, {this.requestHeaders});
+  Function(LoadState) onVideoLoaded;
+
+  VideoLoader(this.url, {this.requestHeaders, this.onVideoLoaded});
 
   void loadVideo(VoidCallback onComplete) {
     if (this.videoFile != null) {
       this.state = LoadState.success;
       onComplete();
+      this.onVideoLoaded(this.state);
     }
 
-    final fileStream =
-        DefaultCacheManager().getFile(this.url, headers: this.requestHeaders);
+    final fileStream = DefaultCacheManager().getFile(this.url, headers: this.requestHeaders);
 
     fileStream.listen((fileInfo) {
       if (this.videoFile == null) {
         this.state = LoadState.success;
         this.videoFile = fileInfo.file;
         onComplete();
+        this.onVideoLoaded(this.state);
       }
     });
   }
@@ -42,15 +45,21 @@ class StoryVideo extends StatefulWidget {
   final StoryController storyController;
   final VideoLoader videoLoader;
 
-  StoryVideo(this.videoLoader, {this.storyController, Key key})
-      : super(key: key ?? UniqueKey());
+  StoryVideo(this.videoLoader, {this.storyController, Key key}) : super(key: key ?? UniqueKey());
 
-  static StoryVideo url(String url,
-      {StoryController controller,
-      Map<String, dynamic> requestHeaders,
-      Key key}) {
+  static StoryVideo url(
+    String url, {
+    StoryController controller,
+    Map<String, dynamic> requestHeaders,
+    Key key,
+    Function(LoadState) onVideoLoaded,
+  }) {
     return StoryVideo(
-      VideoLoader(url, requestHeaders: requestHeaders),
+      VideoLoader(
+        url,
+        requestHeaders: requestHeaders,
+        onVideoLoaded: (state) => onVideoLoaded(state),
+      ),
       storyController: controller,
       key: key,
     );
@@ -75,8 +84,7 @@ class StoryVideoState extends State<StoryVideo> {
 
     widget.videoLoader.loadVideo(() {
       if (widget.videoLoader.state == LoadState.success) {
-        this.playerController =
-            VideoPlayerController.file(widget.videoLoader.videoFile);
+        this.playerController = VideoPlayerController.file(widget.videoLoader.videoFile);
 
         playerController.initialize().then((v) {
           setState(() {});
@@ -84,8 +92,7 @@ class StoryVideoState extends State<StoryVideo> {
         });
 
         if (widget.storyController != null) {
-          _streamSubscription =
-              widget.storyController.playbackNotifier.listen((playbackState) {
+          _streamSubscription = widget.storyController.playbackNotifier.listen((playbackState) {
             if (playbackState == PlaybackState.pause) {
               playerController.pause();
             } else {
@@ -100,8 +107,7 @@ class StoryVideoState extends State<StoryVideo> {
   }
 
   Widget getContentView() {
-    if (widget.videoLoader.state == LoadState.success &&
-        playerController.value.initialized) {
+    if (widget.videoLoader.state == LoadState.success && playerController.value.initialized) {
       return Center(
         child: AspectRatio(
           aspectRatio: playerController.value.aspectRatio,
@@ -123,11 +129,12 @@ class StoryVideoState extends State<StoryVideo> {
           )
         : Center(
             child: Text(
-            "Media failed to load.",
-            style: TextStyle(
-              color: Colors.white,
+              "Media failed to load.",
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
-          ));
+          );
   }
 
   @override
