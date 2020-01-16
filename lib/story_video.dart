@@ -121,7 +121,16 @@ class StoryVideoState extends State<StoryVideo> {
         ),
       );
     }
-
+    return Center(
+      child: Container(
+        width: 70,
+        height: 70,
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          strokeWidth: 3,
+        ),
+      ),
+    );
     return widget.videoLoader.state == LoadState.loading
         ? Center(
             child: Container(
