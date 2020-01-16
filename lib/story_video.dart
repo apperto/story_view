@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -87,6 +88,7 @@ class StoryVideoState extends State<StoryVideo> {
         this.playerController = VideoPlayerController.file(widget.videoLoader.videoFile);
 
         playerController.initialize().then((v) {
+          log("initialize");
           setState(() {});
           widget.storyController.play();
         });
@@ -94,9 +96,13 @@ class StoryVideoState extends State<StoryVideo> {
         if (widget.storyController != null) {
           _streamSubscription = widget.storyController.playbackNotifier.listen((playbackState) {
             if (playbackState == PlaybackState.pause) {
+              log("pause video");
               playerController.pause();
             } else {
-              playerController.play();
+              if (!playerController.value.isPlaying) {
+                log("play video");
+                playerController.play();
+              }
             }
           });
         }
@@ -149,6 +155,8 @@ class StoryVideoState extends State<StoryVideo> {
 
   @override
   void dispose() {
+    print("dispose");
+    playerController.pause();
     playerController.dispose();
     _streamSubscription?.cancel();
     super.dispose();

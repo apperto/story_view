@@ -13,6 +13,9 @@ export 'story_image.dart';
 export 'story_video.dart';
 export 'story_controller.dart';
 
+/// Indicates the story type
+enum StoryType { video, image, text, gif }
+
 /// Indicates where the progress indicators should be placed.
 enum ProgressPosition { top, bottom }
 
@@ -38,6 +41,8 @@ class StoryItem {
 
   int index;
 
+  StoryType type;
+
   /// The page content
   final Widget view;
 
@@ -46,6 +51,7 @@ class StoryItem {
     this.duration = const Duration(seconds: 3),
     this.index,
     this.shown = false,
+    this.type,
   }) : assert(duration != null, "[duration] should not be null");
 
   /// Short hand to create text-only page.
@@ -102,6 +108,7 @@ class StoryItem {
       ),
       shown: shown,
       index: index,
+      type: StoryType.text,
     );
   }
 
@@ -111,7 +118,6 @@ class StoryItem {
   static StoryItem pageImage(
     ImageProvider image, {
     BoxFit imageFit = BoxFit.fitWidth,
-    String caption,
     Duration duration = const Duration(seconds: 3),
     bool shown = false,
     int index,
@@ -123,43 +129,13 @@ class StoryItem {
         children: <Widget>[
           Container(
             color: Colors.black,
-            child: Stack(
-              children: <Widget>[
-                Center(
-                  child: Image(
-                    image: image,
-                    height: double.infinity,
-                    width: double.infinity,
-                    fit: imageFit,
-                  ),
-                ),
-                SafeArea(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(
-                        bottom: 24,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 8,
-                      ),
-                      color: caption != null ? Colors.black54 : Colors.transparent,
-                      child: caption != null
-                          ? Text(
-                              caption,
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
-                            )
-                          : SizedBox(),
-                    ),
-                  ),
-                )
-              ],
+            child: Center(
+              child: Image(
+                image: image,
+                height: double.infinity,
+                width: double.infinity,
+                fit: imageFit,
+              ),
             ),
           ),
           Positioned(
@@ -175,13 +151,13 @@ class StoryItem {
       duration: duration,
       shown: shown,
       index: index,
+      type: StoryType.image,
     );
   }
 
   /// Shorthand for creating inline image page.
   static StoryItem inlineImage(
     ImageProvider image, {
-    Text caption,
     bool shown = false,
     bool roundedTop = true,
     bool roundedBottom = false,
@@ -190,34 +166,20 @@ class StoryItem {
     return StoryItem(
       Container(
         decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(roundedTop ? 8 : 0),
-              bottom: Radius.circular(roundedBottom ? 8 : 0),
-            ),
-            image: DecorationImage(
-              image: image,
-              fit: BoxFit.cover,
-            )),
-        child: Container(
-          margin: EdgeInsets.only(
-            bottom: 16,
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(roundedTop ? 8 : 0),
+            bottom: Radius.circular(roundedBottom ? 8 : 0),
           ),
-          padding: EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 8,
-          ),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              child: caption == null ? SizedBox() : caption,
-              width: double.infinity,
-            ),
+          image: DecorationImage(
+            image: image,
+            fit: BoxFit.cover,
           ),
         ),
       ),
       shown: shown,
       index: index,
+      type: StoryType.image,
     );
   }
 
@@ -225,61 +187,43 @@ class StoryItem {
     String url, {
     StoryController controller,
     BoxFit imageFit = BoxFit.fitWidth,
-    String caption,
     bool shown = false,
     Map<String, dynamic> requestHeaders,
     int index,
+    Widget bottomWidget,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
-      Container(
-        color: Colors.black,
-        child: Stack(
-          children: <Widget>[
-            StoryImage.url(
+      Stack(
+        children: <Widget>[
+          Container(
+            color: Colors.black,
+            child: StoryImage.url(
               url,
               controller: controller,
               fit: imageFit,
               requestHeaders: requestHeaders,
             ),
-            SafeArea(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(
-                    bottom: 24,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
-                  ),
-                  color: caption != null ? Colors.black54 : Colors.transparent,
-                  child: caption != null
-                      ? Text(
-                          caption,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        )
-                      : SizedBox(),
-                ),
-              ),
-            )
-          ],
-        ),
+          ),
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: SafeArea(
+              child: bottomWidget ?? Container(width: 0.0, height: 0.0),
+            ),
+          ),
+        ],
       ),
       shown: shown,
       index: index,
+      type: StoryType.gif,
     );
   }
 
   /// Shorthand for creating inline image page.
   static StoryItem inlineGif(
     String url, {
-    Text caption,
     StoryController controller,
     BoxFit imageFit = BoxFit.cover,
     Map<String, dynamic> requestHeaders,
@@ -299,36 +243,17 @@ class StoryItem {
         ),
         child: Container(
           color: Colors.black,
-          child: Stack(
-            children: <Widget>[
-              StoryImage.url(
-                url,
-                controller: controller,
-                fit: imageFit,
-                requestHeaders: requestHeaders,
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  bottom: 16,
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 8,
-                ),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    child: caption == null ? SizedBox() : caption,
-                    width: double.infinity,
-                  ),
-                ),
-              ),
-            ],
+          child: StoryImage.url(
+            url,
+            controller: controller,
+            fit: imageFit,
+            requestHeaders: requestHeaders,
           ),
         ),
       ),
       shown: shown,
       index: index,
+      type: StoryType.gif,
     );
   }
 
@@ -337,56 +262,39 @@ class StoryItem {
     StoryController controller,
     Duration duration,
     BoxFit imageFit = BoxFit.fitWidth,
-    String caption,
     bool shown = false,
     Map<String, dynamic> requestHeaders,
     int index,
     Function(LoadState) onVideoLoaded,
+    Widget bottomWidget,
   }) {
     assert(imageFit != null, "[imageFit] should not be null");
     return StoryItem(
-      Container(
-        color: Colors.black,
-        child: Stack(
-          children: <Widget>[
-            StoryVideo.url(
+      Stack(
+        children: <Widget>[
+          Container(
+            color: Colors.black,
+            child: StoryVideo.url(
               url,
               controller: controller,
               requestHeaders: requestHeaders,
               onVideoLoaded: (state) => onVideoLoaded(state),
             ),
-            SafeArea(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(
-                    bottom: 24,
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
-                  ),
-                  color: caption != null ? Colors.black54 : Colors.transparent,
-                  child: caption != null
-                      ? Text(
-                          caption,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        )
-                      : SizedBox(),
-                ),
-              ),
-            )
-          ],
-        ),
+          ),
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: SafeArea(
+              child: bottomWidget ?? Container(width: 0.0, height: 0.0),
+            ),
+          ),
+        ],
       ),
       shown: shown,
       duration: duration ?? Duration(seconds: 10),
       index: index,
+      type: StoryType.video,
     );
   }
 }
@@ -560,10 +468,12 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
   }
 
   void goBack() {
+    print("goback()");
     widget.controller?.play();
 
     animationController.stop();
 
+    print(this.lastShowing);
     if (this.lastShowing == null) {
       widget.storyItems.last.shown = false;
     }
@@ -582,10 +492,11 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
   }
 
   void goForward() {
+    print("goForward()");
     if (this.lastShowing != widget.storyItems.last) {
       animationController.stop();
 
-      // get last showing
+      print("// get last showing");
       final _last = this.lastShowing;
 
       if (_last != null) {
