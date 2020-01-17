@@ -3,8 +3,12 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - keyboard_visibility (0.5.0):
+    - Flutter
+    - Reachability
   - path_provider (0.0.1):
     - Flutter
+  - Reachability (3.2)
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
@@ -15,6 +19,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
@@ -23,10 +28,13 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - FMDB
+    - Reachability
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  keyboard_visibility:
+    :path: ".symlinks/plugins/keyboard_visibility/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   sqflite:
@@ -39,7 +47,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   video_player: 69c5f029fac4ffe4fc8a85ea7f7b793709661549
   video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7

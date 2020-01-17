@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:story_view/utils.dart';
 import 'story_video.dart';
 import 'story_image.dart';
@@ -329,6 +330,7 @@ class StoryView extends StatefulWidget {
   final Color indicatorForegroundColor;
   final Color indicatorBackgroundColor;
   final EdgeInsets progressMargin;
+  final Function(bool) isKeyboardVisible;
 
   StoryView(
     this.storyItems, {
@@ -341,6 +343,7 @@ class StoryView extends StatefulWidget {
     this.progressMargin,
     this.repeat = false,
     this.inline = false,
+    this.isKeyboardVisible,
   })  : assert(storyItems != null && storyItems.length > 0, "[storyItems] should not be null or empty"),
         assert(progressPosition != null, "[progressPosition] cannot be null"),
         assert(
@@ -360,6 +363,9 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
   Animation<double> currentAnimation;
   Timer debouncer;
 
+  KeyboardVisibilityNotification _keyboardVisibility = new KeyboardVisibilityNotification();
+  int _keyboardVisibilitySubscriber;
+
   StreamSubscription<PlaybackState> playbackSubscription;
 
   StoryItem get lastShowing => widget.storyItems.firstWhere((it) => !it.shown, orElse: () => null);
@@ -368,8 +374,18 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    // All pages after the first unshown page should have their shown value as
-    // false
+    _keyboardVisibilitySubscriber = _keyboardVisibility.addNewListener(
+      onChange: (bool visible) {
+        if (visible) {
+          widget.controller?.pause();
+        } else {
+          widget.controller?.play();
+        }
+        widget.isKeyboardVisible(visible);
+      },
+    );
+
+    // All pages after the first unshown page should have their shown value as false
 
     final firstPage = widget.storyItems.firstWhere((it) {
       return !it.shown;
@@ -406,6 +422,7 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
     debouncer?.cancel();
     animationController?.dispose();
     playbackSubscription?.cancel();
+    _keyboardVisibility.removeListener(_keyboardVisibilitySubscriber);
     super.dispose();
   }
 
@@ -468,7 +485,12 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
   }
 
   void goBack() {
-    print("goback()");
+    if (_keyboardVisibility.isKeyboardVisible) {
+      // dismiss keyboard if visible
+      FocusScope.of(context).requestFocus(new FocusNode());
+      return;
+    }
+
     widget.controller?.play();
 
     animationController.stop();
@@ -492,7 +514,12 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
   }
 
   void goForward() {
-    print("goForward()");
+    if (_keyboardVisibility.isKeyboardVisible) {
+      // dismiss keyboard if visible
+      FocusScope.of(context).requestFocus(new FocusNode());
+      return;
+    }
+
     if (this.lastShowing != widget.storyItems.last) {
       animationController.stop();
 
