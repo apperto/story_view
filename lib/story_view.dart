@@ -596,37 +596,40 @@ class StoryViewState extends State<StoryView> with TickerProviderStateMixin {
           Align(
             alignment: Alignment.centerRight,
             heightFactor: 0.7,
-            child: RawGestureDetector(
-              gestures: <Type, GestureRecognizerFactory>{
-                TapGestureRecognizer: GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
-                    () => TapGestureRecognizer(), (instance) {
-                  instance
-                    ..onTapDown = (details) {
-                      controlPause();
-                      debouncer?.cancel();
-                      debouncer = Timer(Duration(milliseconds: 500), () {});
-                    }
-                    ..onTapUp = (details) {
-                      if (debouncer?.isActive == true) {
-                        debouncer.cancel();
-                        debouncer = null;
+            child: Container(
+              // color: Colors.red,
+              child: RawGestureDetector(
+                gestures: <Type, GestureRecognizerFactory>{
+                  TapGestureRecognizer: GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+                      () => TapGestureRecognizer(), (instance) {
+                    instance
+                      ..onTapDown = (details) {
+                        controlPause();
+                        debouncer?.cancel();
+                        debouncer = Timer(Duration(milliseconds: 500), () {});
+                      }
+                      ..onTapUp = (details) {
+                        if (debouncer?.isActive == true) {
+                          debouncer.cancel();
+                          debouncer = null;
 
-                        goForward();
-                      } else {
+                          goForward();
+                        } else {
+                          debouncer.cancel();
+                          debouncer = null;
+
+                          controlUnpause();
+                        }
+                      }
+                      ..onTapCancel = () {
                         debouncer.cancel();
                         debouncer = null;
 
                         controlUnpause();
-                      }
-                    }
-                    ..onTapCancel = () {
-                      debouncer.cancel();
-                      debouncer = null;
-
-                      controlUnpause();
-                    };
-                })
-              },
+                      };
+                  })
+                },
+              ),
             ),
           ),
           Align(
@@ -717,7 +720,7 @@ class PageBarState extends State<PageBar> {
             padding: EdgeInsets.only(right: widget.pages.last == it ? 0 : this.spacing),
             child: StoryProgressIndicator(
               isPlaying(it) ? widget.animation.value : it.shown ? 1 : 0,
-              indicatorHeight: widget.indicatorHeight == IndicatorHeight.large ? 5 : 3,
+              indicatorHeight: widget.indicatorHeight == IndicatorHeight.large ? 5 : 2,
               foregroundColor: widget.foregroundColor,
               backgroundColor: widget.backgroundColor,
               margin: widget.margin,
